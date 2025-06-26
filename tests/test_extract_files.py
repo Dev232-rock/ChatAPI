@@ -21,7 +21,7 @@ def test_removes_files_from_input() -> None:
     assert extract_files(query3, paths=[["foo", "foo", "bar"]]) == [("foo[foo][bar]", b"Bar")]
     assert query3 == {"foo": {"foo": {}}, "hello": "world"}
 
-    query4 = {"foo": {"bar": b"Bar", "baz": "foo"}, "hello": "world"
+    query4 = {"foo": {"bar": b"Bar", "baz": "foo"}, "hello": "world"}
     assert extract_files(query4, paths=[["foo", "bar"]]) == [("foo[bar]", b"Bar")]
     assert query4 == {"hello": "world", "foo": {"baz": "foo"}}
 
