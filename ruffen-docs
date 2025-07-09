@@ -1,0 +1,25 @@
+# fork of https://github.com/asottile/blacken-docs adapted for ruff
+from __future__ import annotations
+
+import re
+import sys
+import argparse
+import textwrap
+import contextlib
+import subprocess
+from typing import Match, Optional, Sequence, Generator, NamedTuple, cast
+
+MD_RE = re.compile(
+    r"(?P<before>^(?P<indent> *)```\s*python\n)" r"(?P<code>.*?)" r"(?P<after>^(?P=indent)```\s*$)",
+    re.DOTALL | re.MULTILINE,
+)
+MD_PYCON_RE = re.compile(
+    r"(?P<before>^(?P<indent> *)```\s*pycon\n)" r"(?P<code>.*?)" r"(?P<after>^(?P=indent)```.*$)",
+    re.DOTALL | re.MULTILINE,
+)
+PYCON_PREFIX = ">>> "
+PYCON_CONTINUATION_PREFIX = "..."
+PYCON_CONTINUATION_RE = re.compile(
+    rf"^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)",
+)
+DEFAULT_LINE_LENGTH = 100
