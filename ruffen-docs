@@ -33,3 +33,16 @@ def format_str(
     src: str,
 ) -> tuple[str, Sequence[CodeBlockError]]:
     errors: list[CodeBlockError] = []
+ @contextlib.contextmanager
+    def _collect_error(match: Match[str]) -> Generator[None, None, None]:
+        try:
+            yield
+        except Exception as e:
+            errors.append(CodeBlockError(match.start(), e))
+
+    def _md_match(match: Match[str]) -> str:
+        code = textwrap.dedent(match["code"])
+        with _collect_error(match):
+            code = format_code_block(code)
+        code = textwrap.indent(code, match["indent"])
+        return f"{match['before']}{code}{match['after']}"
