@@ -23,3 +23,13 @@ PYCON_CONTINUATION_RE = re.compile(
     rf"^{re.escape(PYCON_CONTINUATION_PREFIX)}( |$)",
 )
 DEFAULT_LINE_LENGTH = 100
+
+class CodeBlockError(NamedTuple):
+    offset: int
+    exc: Exception
+
+
+def format_str(
+    src: str,
+) -> tuple[str, Sequence[CodeBlockError]]:
+    errors: list[CodeBlockError] = []
