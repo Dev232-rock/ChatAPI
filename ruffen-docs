@@ -46,3 +46,27 @@ def format_str(
             code = format_code_block(code)
         code = textwrap.indent(code, match["indent"])
         return f"{match['before']}{code}{match['after']}"
+ def _pycon_match(match: Match[str]) -> str:
+        code = ""
+        fragment = cast(Optional[str], None)
+
+        def finish_fragment() -> None:
+            nonlocal code
+            nonlocal fragment
+
+            if fragment is not None:
+                with _collect_error(match):
+                    fragment = format_code_block(fragment)
+                fragment_lines = fragment.splitlines()
+                code += f"{PYCON_PREFIX}{fragment_lines[0]}\n"
+                for line in fragment_lines[1:]:
+                    # Skip blank lines to handle Black adding a blank above
+                    # functions within blocks. A blank line would end the REPL
+                    # continuation prompt.
+                    #
+                    # >>> if True:
+                    # ...     def f():
+                    # ...         pass
+                    # ...
+                    if line:
+                        code += f"{PYCON_CONTINUATION_PREFIX} {line}\n"
