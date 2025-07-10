@@ -75,3 +75,8 @@ def format_str(
                 fragment = None
 
         indentation = None
+for line in match["code"].splitlines():
+            orig_line, line = line, line.lstrip()
+            if indentation is None and line:
+                indentation = len(orig_line) - len(line)
+            continuation_match = PYCON_CONTINUATION_RE.match(line)
