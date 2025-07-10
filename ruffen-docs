@@ -88,3 +88,5 @@ for line in match["code"].splitlines():
                     fragment = line[len(PYCON_PREFIX) :] + "\n"
                 else:
                     code += orig_line[indentation:] + "\n"
+ finish_fragment()
+        return code
