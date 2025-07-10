@@ -80,3 +80,11 @@ for line in match["code"].splitlines():
             if indentation is None and line:
                 indentation = len(orig_line) - len(line)
             continuation_match = PYCON_CONTINUATION_RE.match(line)
+            if continuation_match and fragment is not None:
+                fragment += line[continuation_match.end() :] + "\n"
+            else:
+                finish_fragment()
+                if line.startswith(PYCON_PREFIX):
+                    fragment = line[len(PYCON_PREFIX) :] + "\n"
+                else:
+                    code += orig_line[indentation:] + "\n"
